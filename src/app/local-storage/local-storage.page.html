@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-button slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-button>
+    <ion-title>Recuperar Contraseña</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label position="floating">Nombre de Usuario</ion-label>
+    <ion-input [(ngModel)]="usuario"></ion-input>
+  </ion-item>
+
+  <ion-button expand="full" (click)="buscarUsuario()">Buscar Usuario</ion-button>
+
+  <ion-item *ngIf="password">
+    <ion-label>Password:</ion-label>
+    <ion-text>{{ password }}</ion-text>
+  </ion-item>
+</ion-content>
