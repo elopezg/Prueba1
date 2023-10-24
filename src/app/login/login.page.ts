@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  FormBuilder
-} from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { StorageService } from '../services/storage.service';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-login',
@@ -17,46 +14,51 @@ export class LoginPage implements OnInit {
 
   formularioLogin: FormGroup;
 
-  constructor(
-    public fb: FormBuilder,
-    public alertController: AlertController,
-    private router: Router // Importa el Router para la navegación
-  ) {
+  constructor(public fb: FormBuilder,
+    public alertController: AlertController, private router: Router, public storage : StorageService) { 
     this.formularioLogin = this.fb.group({
-      'nombre': new FormControl("", Validators.required),
+      'nombreLogin': new FormControl("", Validators.required), // Cambio de 'nombre' a 'nombreLogin'
       'password': new FormControl("", Validators.required)
-    });
+    })
   }
 
   ngOnInit() {
   }
 
   async ingresar() {
-    var f = this.formularioLogin.value;
-    var usuarioString = localStorage.getItem('usuario');
-    if (usuarioString !== null) {
-      var usuario = JSON.parse(usuarioString);
-      if (usuario.nombre == f.nombre && usuario.password == f.password) {
-        const alert = await this.alertController.create({
-          message: 'Has ingresado con éxito',
-          buttons: ['Aceptar'],
-        });
-        await alert.present();
-        console.log('Ingresado');
-        localStorage.setItem('ingresado', 'true');
+    if (this.formularioLogin.valid) {
+      const f = this.formularioLogin.value;
 
-        // Navega a la página de registro
-        this.router.navigate(['/lector']);
-      } else {
-        const alert = await this.alertController.create({
-          header: 'Datos incorrectos',
-          message: 'Tienes que llenar todos los datos',
-          buttons: ['Aceptar'],
-        });
-        await alert.present();
-      }
-    } else {
-      // Manejo de caso cuando no se encuentra el valor en localStorage
+      // Obtén la lista de usuarios registrados desde el localStorage
+      const usuariosJSON = await Preferences.get({ key: 'usuarios'});
+      const usuarios: { nombre: string, password: string} [] = usuariosJSON && usuariosJSON.value ? JSON.parse(usuariosJSON.value) : [];
+      // Busca al usuario por su nombre de usuario
+      const user = usuarios.find((u: any) => u.usuario === f.nombre && u.password === f.password);
+
+        if (user) {
+          // Compara el nombre de usuario y la contraseña ingresados
+          await Preferences.set({ key: 'nombreUsuario', value: user.nombre});
+          await Preferences.set({ key: 'nombreLogin', value: JSON.stringify(usuarios)});
+          console.log("Sesión iniciada");
+          this.router.navigate(['/home']);
+          }else{
+            const alert = await this.alertController.create({
+              header: 'Datos incorrectos',
+              message: 'Los datos que se ingresaron no son correctos.',
+              buttons: ['Aceptar']
+            });
+
+            await alert.present();
+          } 
+
+      }else {
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Por favor, complete todos los campos correctamente.',
+        buttons: ['Aceptar']
+      });
+
+      await alert.present();
     }
   }
 }

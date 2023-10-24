@@ -1,5 +1,8 @@
 {
-  "name": "motapp1",
-  "integrations": {},
+  "name": "ionic-app-base",
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
   "type": "angular"
 }

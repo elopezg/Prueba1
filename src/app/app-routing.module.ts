@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './services/auth.guard';
 
 const routes: Routes = [
+
   {
     path: '',
     redirectTo: 'login',
-    pathMatch: 'full' 
+    pathMatch: 'full'
   },
   {
     path: 'login',
@@ -15,15 +17,30 @@ const routes: Routes = [
     path: 'registro',
     loadChildren: () => import('./registro/registro.module').then( m => m.RegistroPageModule)
   },
-  
   {
-    path: 'lector',
-    loadChildren: () => import('./lector/lector.module').then( m => m.LectorPageModule)
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
+    canActivate: [AuthGuard]
   },
   {
-    path: 'local-storage',
-    loadChildren: () => import('./local-storage/local-storage.module').then( m => m.LocalStoragePageModule)
+    path: 'recuperar-password',
+    loadChildren: () => import('./recuperar-password/recuperar-password.module').then( m => m.RecuperarPasswordPageModule)
   },
+  {
+    path: 'info',
+    loadChildren: () => import('./info/info.module').then( m => m.InfoPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'error',
+    loadChildren: () => import('./error/error.module').then( m => m.ErrorPageModule)
+  },
+  {
+    path: '**', // Ruta para cualquier otro caso no especificado
+    redirectTo: 'error',
+    pathMatch: 'full'
+  }
+
 ];
 
 @NgModule({
