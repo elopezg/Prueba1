@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Informacion</ion-title>
+    <ion-title>INFORMACIÓN</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,17 +13,18 @@
   <ion-card>
     <p [innerHTML]="mensajeDesdePreferences"></p>
     <p *ngIf="latitude !== undefined && longitude !== undefined">
-      Latitud: {{ latitude }}, 
+      Estas son tus coordenadas:
+      Latitud: {{ latitude }},
       Longitud: {{ longitude }}
     </p>
   </ion-card>
 
   <ion-card>
-    <h6>Clase: <h6 id="clase"></h6></h6>
+    <h6>Datos de la clase:<h6 id="clase"></h6></h6>
   </ion-card>
 
   <ion-card>
-    <h6>Alumno: <h6 id="datosAlumno"></h6> </h6>
+    <h6>Datos del Alumno: <h6 id="datosAlumno"></h6> </h6>
     <ion-item *ngFor="let usuario of usuarios">
       <ion-label>
             <h4>Rut:</h4> {{ usuario.rut }}
@@ -38,10 +39,10 @@
             </ng-container>
       </ion-label>
     </ion-item>
-    
+
   </ion-card>
 
-  
+
 
 
   <div id="container">
